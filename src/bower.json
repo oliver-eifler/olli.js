@@ -1,0 +1,24 @@
+{
+  "name": "feo",
+  "version": "0.0.1",
+  "authors": [
+    "Oliver Jean Eifler <olli.eifler@gmail.com>"
+  ],
+  "description": "Förderverein Pro Eisenbahn im Oderbruch e.V.",
+  "license": "MIT",
+  "homepage": "www.feo.dd",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "include-media": "include-media#latest",
+    "webfontloader": "webfontloader#latest",
+    "svg4everybody": "svg4everybody#latest",
+    "promise-polyfill": "~2.1.0"
+  }
+}
