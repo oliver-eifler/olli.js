@@ -1,5 +1,6 @@
 import {DOC} from "../const.js";
 import {getComputedStyle,register} from "../helper.js";
+import {sandboxBody} from "../util/sandbox.js";
 import {$Element} from "../types/base.js";
 import {Lib} from "../core.js";
 
@@ -8,8 +9,8 @@ var scrollbarSize = (function() {
     function createNode() {
         node = DOC.createElement('div');
         node.id="<%= prop('sbs') %>";
-        node.style.cssText = 'position:absolute;overflow:scroll;top:-100px;left:-100px;width:100px;height:100px;';
-        DOC.body.appendChild(node);
+        node.style.cssText = 'position:absolute;overflow:scroll;width:100px;height:100px;';
+        sandboxBody().appendChild(node);
         return node;
     }
     return function() {

@@ -7,7 +7,7 @@ import {registerEx,isArray,isNumber,isString,isStringEmpty,isUndefined,insertCSS
 import prefixCSS from "../util/prefixfree.js";
 
 import {$Stylesheet,$NullStylesheet} from "../cssom/types.js";
-import {sandboxSheet} from "../cssom/sandbox.js";
+import {sandboxSheet} from "../cssom/util.js";
 
 /*$Stylesheet constructor*/
 $Document.fn.styleSheet = function(content) {

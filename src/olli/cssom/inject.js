@@ -74,7 +74,7 @@ var inject = function(rules,stylesheet,prefix) {
     }
     if (isString(rules)) {
         if (ignoreSelector(rules)) {
-            console.log("ignoring "+rules);
+            //console.log("ignoring "+rules);
             return;
         }
         findOrDeleteBySelector(rules, stylesheet, null);
@@ -83,7 +83,7 @@ var inject = function(rules,stylesheet,prefix) {
     /* we have a rule object */
     keys(rules).forEach(function (selector) {
         if (ignoreSelector(selector)) {
-            console.log("ignoring "+selector);
+            //console.log("ignoring "+selector);
             return;
         }
         var css = rules[selector]; //Obj,array or NULL

@@ -1,6 +1,37 @@
 /**
  * Created by darkwolf on 08.11.2015.
  */
+import {WIN,DOC} from "../const.js";
+import {insertElement} from "../helper.js";
+import {sandboxFrame} from "../util/sandbox.js";
+
+function createSandboxStyle(doc) {
+    var node = doc.createElement("style");
+    node.setAttribute("data-olli","sandboxCSS");
+    return insertElement(node);
+}
+export var sandboxRules = (function(){
+    var node;
+    return function(force) {
+        if (force === false)
+            return node?node.sheet:null;
+        node = node || createSandboxStyle(sandboxFrame());
+        return node.sheet;
+    }
+})();
+export var sandboxSheet = (function(){
+    var node;
+    return function(cssText) {
+        var doc = sandboxFrame();
+        node = node || createSandboxStyle(doc);
+        while (node.lastChild)
+            node.removeChild(node.lastChild);
+        node.appendChild(doc.createTextNode(cssText));
+        return node.sheet;
+    }
+})();
+
+
 /* RUle Types */
 /*
 interface CSSRule {

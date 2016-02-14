@@ -19,8 +19,8 @@ import "./events/resizefont.js";
 import "./module/frame.js";
 import "./module/ready.js";
 import "./module/xhr.js";
-import "./module/loadScript.js";
-import "./module/loadCSS.js";
+import "./document/loadScript.js";
+import "./document/loadCSS.js";
 
 import {Lib} from "./core.js";
 export default Lib;

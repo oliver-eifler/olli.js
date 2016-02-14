@@ -1,5 +1,6 @@
 import {WIN,DOC} from "../const.js";
 import {object} from "../helper.js";
+import {sandboxBody} from "../util/sandbox.js";
 import Promise from "../polyfills/promise.js";
 
 export default (function (undefined) {
@@ -124,7 +125,8 @@ export default (function (undefined) {
 
             (function checkDimensions() {
                 if (!ref) {
-                    ref = DOC.body;
+                    //ref = DOC.body;
+                    ref = sandboxBody()||DOC.body;
                 }
                 if (!appended && ref) {
                     ref.appendChild(parent);

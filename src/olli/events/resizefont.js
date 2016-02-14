@@ -1,5 +1,6 @@
 import {DOC,HTML} from "../const.js";
 import {isFunction} from "../helper.js";
+import {sandboxBody} from "../util/sandbox.js";
 import {$Element} from "../types/base.js";
 import {Lib} from "../core.js";
 import EventHooks from "../util/eventhooks.js";
@@ -13,14 +14,12 @@ var fontNode = (function() {
         node.id="<%= prop('fontsize') %>";
         $Element(node).css({
             "display":"inline-block"
-            ,"visibility":"hidden"
             ,"position":"absolute"
-            ,"z-index":"-1"
             ,"width":"1em"
             ,"height":"1em"
             ,"transition":"font-size 1ms linear"
         });
-        DOC.body.appendChild(node);
+        sandboxBody().appendChild(node);
         return node;
     }
     return function() {

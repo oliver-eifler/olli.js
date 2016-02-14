@@ -10,7 +10,7 @@ function loader(url,cacheBurst) {
     if (isStringEmpty(url)) {
         return Promise.reject(new Error("Empty URL"));
     }
-    loadpromise[url] = loadpromise[url]|| XHR.get(url, {cacheBurst: cacheBurst ? "t" : false});
+    loadpromise[url] = loadpromise[url]|| XHR.get(url, {cacheBurst: cacheBurst ? "t" : false,headers:{"X-Requested-With": null}});
     return loadpromise[url];
 }
 export default function assetLoader(url, cacheBurst,callback) {

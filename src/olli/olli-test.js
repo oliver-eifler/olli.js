@@ -3,6 +3,8 @@
 
 // olli.js - ES6
 import "./document/create.js";
+import "./document/loadScript.js";
+import "./document/loadCSS.js";
 
 import "./element/manipulation.js";
 import "./element/empty.js";
@@ -24,8 +26,6 @@ import "./events/resizefont.js";
 import "./module/frame.js";
 import "./module/ready.js";
 import "./module/xhr.js";
-import "./module/loadScript.js";
-import "./module/loadCSS.js";
 import "./module/isstylesupported.js";
 import "./module/feature.js";
 import "./module/fontloaded.js";
@@ -60,5 +60,5 @@ olli.ready().then(function () {
 
     olli.fontLoaded("Roboto").then(function(res) {console.log(res)}).catch(function(res){console.log(res)});
     olli.fontLoaded("Playfair Display",{weight:700}).then(function(res) {console.log(res)}).catch(function(res){console.log(res)});
-    olli.fontLoaded("Playfair Display",{style:'italic'}).then(function(res) {console.log(res)}).catch(function(res){console.log(res)});
+    olli.fontLoaded("Wurstl",{style:'italic'}).then(function(res) {console.log(res)}).catch(function(res){console.log(res)});
 });
