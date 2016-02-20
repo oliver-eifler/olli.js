@@ -1,11 +1,91 @@
 /**
  * Created by darkwolf on 08.11.2015.
  */
-import {register,keys,every,isUndefined,isObject,isFunction,isArray,isString,OlliError} from "../helper.js";
+import {register,keys,every,isUndefined,isObject,isFunction,isArray,isString,OlliError,safeCall} from "../helper.js";
 import {$Element} from "../types/base.js";
 import PROPS from "../util/accessorhooks.js"
-import "../element/value.js";
 
+register($Element, {
+    get: function (name, defaultValue) {
+        var $this = this,
+            node = $this[0],
+            hook = PROPS.get[name],
+            value;
+
+        if (hook) {
+            value = hook(node, name);
+        } else if (isString(name)) {
+            if (name in node) {
+                value = node[name];
+            } else {
+                value = node.getAttribute(name);
+            }
+        } else if (isArray(name)) {
+            value = name.reduce(function (memo, key) {
+                return (memo[key] = $this.get(key), memo);
+            }, {});
+        } else {
+            throw new OlliError("get", arguments);
+        }
+
+        return value != null ? value : defaultValue;
+    }
+}, null, function () {
+    return function () {
+    }
+});
+
+register($Element, {
+    set: function (name, value) {
+        var $this = this,
+            node = $this[0],
+            hook = PROPS.set[name],
+            watchers = this._["<%= prop('watcher') %>"][name],
+            oldValue;
+
+        if (watchers) {
+            oldValue = this.get(name);
+        }
+
+        if (isString(name)) {
+            if (isFunction(value)) {
+                value = value(this);
+            }
+
+            if (hook) {
+                hook(node, value);
+            } else if (value == null) {
+                node.removeAttribute(name);
+            } else if (name in node) {
+                node[name] = value;
+            } else {
+                node.setAttribute(name, value);
+            }
+        } else if (isArray(name)) {
+            name.forEach(function (key) {
+                $this.set(key, value)
+            });
+        } else if (isObject(name) === "object") {
+            keys(name).forEach(function (key) {
+                $this.set(key, name[key])
+            });
+        } else {
+            throw new OlliError("set", arguments);
+        }
+
+        if (watchers && oldValue !== value) {
+            watchers.forEach(function (w) {
+                safeCall($this, w, value, oldValue);
+            });
+        }
+
+        return this;
+    }
+}, null, function () {
+    return function () {
+        return this;
+    }
+});
 
 var reUpper = /[A-Z]/g,
     readPrivateProperty = function (node, key) {
@@ -18,7 +98,7 @@ var reUpper = /[A-Z]/g,
 
         if (value != null) {
             // try to recognize and parse  object notation syntax
-            if (value[0] === "{" && value[value.length - 1] === "}") {
+            if (value[0] === "{" && value[value.length - 1] === "}" || value[0] === "[" && value[value.length - 1] === "]") {
                 try {
                     value = JSON.parse(value);
                 } catch (err) {
@@ -31,95 +111,67 @@ var reUpper = /[A-Z]/g,
     };
 
 register($Element, {
-    get: function (name) {
+    data: function (name, value) {
         var $this = this,
             node = $this[0],
-            hook = PROPS.get[name];
-
-        if (hook) return hook(node, name);
+            data = $this._;
 
         if (isString(name)) {
-            if (name in node) {
-                return node[name];
-            } else if (name[0] !== "_") {
-                return node.getAttribute(name);
-            } else {
-                var key = name.slice(1),
-                    data = $this._;
-
-                if (!(key in data)) {
-                    data[key] = readPrivateProperty(node, key);
+            if (arguments.length === 1) {
+                if (!(name in data)) {
+                    data[name] = readPrivateProperty(node, name);
                 }
 
-                return data[key];
+                return data[name];
+            } else {
+                data[name] = value;
             }
         } else if (isArray(name)) {
             return name.reduce(function (memo, key) {
-                return (memo[key] = $this.get(key), memo);
+                return (memo[key] = $this.data(key), memo);
             }, {});
+        } else if (name && isObject(name)) {
+            keys(name).forEach(function (key) {
+                $this.data(key, name[key])
+            });
         } else {
-            throw new OlliError("get", arguments);
+            throw new OlliError("data", arguments);
         }
+
+        return this;
     }
 }, null, function () {
-    return function () {
+    return function (name) {
+        if (arguments.length === 1 && isArray(name)) {
+            return {};
+        }
+
+        if (arguments.length !== 1 || !isString(name)) {
+            return this;
+        }
     }
 });
 
 register($Element, {
-    set: function (name, value) {
-        var $this = this,
-            node = $this[0],
-            hook = PROPS.set[name];
-        /*
-         var watchers = $this._["watcher2001004"][name],
-         oldValue;
-         if (watchers) {
-         oldValue = this.get(name);
-         }
-         */
-        if (isString(name)) {
-            if (name[0] === "_") {
-                this._[name.slice(1)] = value;
-            } else {
-                if (isFunction(value)) {
-                    value = value($this);
-                }
+    watch: function (name, callback) {
+        var watchers = this._["<%= prop('watcher') %>"];
 
-                if (hook) {
-                    hook(node, value);
-                } else if (value == null) {
-                    node.removeAttribute(name);
-                } else if (name in node) {
-                    node[name] = value;
-                } else {
-                    node.setAttribute(name, value);
-                }
-                /*
-                 if (JSCRIPT_VERSION < 9 || LEGACY_ANDROID) {
-                 // always trigger reflow manually for IE8 and legacy Android
-                 node.className = node.className;
-                 }
-                 */
-            }
-        } else if (isArray(name)) {
-            name.forEach(function (key) {
-                $this.set(key, value)
+        if (!watchers[name]) watchers[name] = [];
+
+        watchers[name].push(callback);
+
+        return this;
+    },
+
+    unwatch: function (name, callback) {
+        var watchers = this._["<%= prop('watcher') %>"];
+
+        if (watchers[name]) {
+            watchers[name] = watchers[name].filter(function (w) {
+                return w !== callback
             });
-        } else if (isObject(name)) {
-            keys(name).forEach(function (key) {
-                $this.set(key, name[key])
-            });
-        } else {
-            throw new OlliError("set", arguments);
         }
-        /*
-         if (watchers && oldValue !== value) {
-         watchers.forEach(function(w)  {
-         safeCall($this, w, value, oldValue);
-         });
-         }
-         */
+
         return this;
     }
 }, null, function () {
@@ -127,3 +179,4 @@ register($Element, {
         return this;
     }
 });
+

@@ -8,15 +8,17 @@ import prefixCSS from "../util/prefixfree.js";
 
 import {$Stylesheet,$NullStylesheet} from "../cssom/types.js";
 import {sandboxSheet} from "../cssom/util.js";
+import Promise from "../polyfills/promise.js";
+import assetLoader from "../util/loader.js";
 
 /*$Stylesheet constructor*/
-$Document.fn.styleSheet = function(content) {
+$Document.fn.styleSheet = function(content,options) {
     var $this = this,node = $this[0],doc = node.ownerDocument;
     if (isUndefined(content))
         content = "";
     if (isString(content)) {
         /*create new dynamic style */
-        var elem = insertCSS(node, prefixCSS(content));
+        var elem = insertCSS(node, prefixCSS(content),options);
         return $Stylesheet(elem.sheet);
     } else if (isNumber(content)) {
         return $Stylesheet(doc.styleSheets[content]);
@@ -73,6 +75,15 @@ registerEx($Stylesheet.fn, {
             sheet.insertRule(dummyRules[i].cssText, sheet.cssRules.length);
         return $this;
     },
+    loadCSS: function(url,append) {
+        var $this = this;
+        return assetLoader(url,false,function(url,response){
+            if (append === true)
+                $this.appendCSS(response);
+            else
+                $this.setCSS(response);
+        });
+    },
     ownerNode: function () {
         return $Element(this[0].ownerNode);
     }
@@ -89,6 +100,9 @@ registerEx($NullStylesheet.fn, {
     },
     appendCSS: function () {
         return this;
+    },
+    loadCSS: function() {
+        return Promise.reject(new Error("$NullStylesheet"));
     },
     ownerNode: function () {
         return $Element();

@@ -1,6 +1,6 @@
 {
   "name": "olli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "olli.js - javascript part of olli-framework",
   "main": "gruntfile.js",
   "scripts": {

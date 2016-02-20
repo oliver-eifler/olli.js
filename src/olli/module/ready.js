@@ -31,7 +31,7 @@ Lib.ready = (function () {
         var $this = this,
             doc = $this[0].ownerDocument;
         promise = promise || new Promise(function (resolve, reject) {
-                console.log("created ready promise");
+                DEBUG && console.log("created ready promise");
                 if (doc.readyState != 'loading') {
                     ready();
                 } else {

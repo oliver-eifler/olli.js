@@ -203,8 +203,8 @@ module.exports = function (grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: "<%= dir.assets %>/es6/olli",
-                        src: ['olli.js', 'olli-legacy.js'],
+                        cwd: "<%= dir.assets %>/es6",
+                        src: ['app.js'],
                         dest: "<%= dir.release %>/js/dist"
                     }]
 

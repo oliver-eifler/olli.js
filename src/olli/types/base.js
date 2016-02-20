@@ -9,6 +9,7 @@
                 this[0] = node;
                 this._ = {
                     "<%= prop('handler') %>": [],
+                    "<%= prop('watcher') %>": [],
                     "<%= prop('throttle') %>": []
                 };
             }

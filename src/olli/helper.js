@@ -173,18 +173,30 @@ export function insertScript(node,text,url) {
         return insertElement(script);
     }
 //var insertCSSstyle = false;
-export function insertCSS(node,text,url) {
-    /*
-        var doc = node.ownerDocument,
-            style = insertCSSstyle = insertCSSstyle||doc.createElement('p');
-        style.innerHTML = "x<style type='text/css' media='all' data-src='"+url+"'>"+text+"</style>";
-        return insertElement(style.lastChild);
-    */
+var insertCSSdefaults = {
+    "media":"all",
+    "type":"text/css",
+    "data-src": ""
+};
+export function insertCSS(node,text,options) {
+    options=options||{};
+    for (var j in insertCSSdefaults) {
+        if (!options.hasOwnProperty(j)) {
+            options[j] = insertCSSdefaults[j];
+        }
+    }
+
     var doc = node.ownerDocument,
         style = doc.createElement('style');
+    /*
     style.setAttribute("type","text/css");
     style.setAttribute("media","all");
     !isStringEmpty(url) && style.setAttribute('data-src',url);
+    */
+    for (var attr in options) {
+        options.hasOwnProperty(attr) && !isStringEmpty(options[attr]) && style.setAttribute(attr,options[attr]);
+    }
+
     style.appendChild(doc.createTextNode(text));
     //style.textContent = text;
     return insertElement(style);
