@@ -44,10 +44,10 @@ $Document.fn.loadCSS = function (url, cacheBurst) {
 */
 import assetLoader from "../util/loader.js";
 $Document.fn.loadCSS = function (url, cacheBurst) {
-    var $this = this;
+    var node = this[0];
     return assetLoader(url,cacheBurst,function(url,response,options){
         options["data-src"] = url;
-        if (!$this[0].querySelector("style[data-src='"+url+"']"))
-            insertCSS($this[0], response, options);
+        if (!cacheBurst && node.querySelector("style[data-src='"+url+"']"))
+            insertCSS(node, response, options);
     });
 };

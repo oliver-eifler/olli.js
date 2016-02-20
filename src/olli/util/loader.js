@@ -10,6 +10,8 @@ function loader(url,cacheBurst) {
     if (isStringEmpty(url)) {
         return Promise.reject(new Error("Empty URL"));
     }
+    if (cacheBurst && loadpromise[url])
+        loadpromise[url] = false;
     loadpromise[url] = loadpromise[url]|| XHR.get(url, {cacheBurst: cacheBurst ? "t" : false,headers:{"X-Requested-With": null}});
     return loadpromise[url];
 }

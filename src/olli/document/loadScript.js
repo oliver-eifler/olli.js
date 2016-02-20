@@ -44,9 +44,9 @@ $Document.fn.loadScript = function (url, cacheBurst) {
 */
 import assetLoader from "../util/loader.js";
 $Document.fn.loadScript = function (url, cacheBurst) {
-    var $this = this;
+    var node = this[0];
     return assetLoader(url,cacheBurst,function(url,response){
-        if (!$this[0].querySelector("script[data-src='"+url+"']"))
-            insertScript($this[0], response, url);
+        if (!cacheBurst && !node.querySelector("script[data-src='"+url+"']"))
+            insertScript(node, response, url);
     });
 };
