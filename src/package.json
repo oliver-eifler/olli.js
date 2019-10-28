@@ -48,7 +48,7 @@
     "docpad-plugin-livereload": "~2.6.1",
     "docpad-plugin-marked": "~2.3.0",
     "docpad-plugin-moment": "~2.0.2",
-    "lodash": "^3.10.1",
+    "lodash": ">=4.17.13",
     "uglify-js": "^2.5.0"
   }
 }
