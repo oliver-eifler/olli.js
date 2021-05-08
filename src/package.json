@@ -9,7 +9,7 @@
   "author": "Oliver Jean Eifler",
   "license": "MIT",
   "devDependencies": {
-    "grunt": "^0.4.5",
+    "grunt": ">=1.3.0",
     "grunt-autoprefixer": "^2.2.0",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-compass": "^0.7.2",
