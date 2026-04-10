@@ -13,7 +13,7 @@
     "grunt-autoprefixer",
     "grunt-contrib-clean",
     "grunt-contrib-compass",
-    "grunt-contrib-compress"",
+    "grunt-contrib-compress",
     "grunt-contrib-concat",
     "grunt-contrib-copy",
     "grunt-contrib-csslint",
